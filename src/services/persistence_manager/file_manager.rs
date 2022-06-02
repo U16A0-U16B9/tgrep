@@ -9,6 +9,8 @@ const APPLICATION: &str = "tgbot";
 
 const DATA_REPUTATIONS: &str = "reputations.json";
 
+const CONFIG_TRIGGERS: &str = "triggers.json";
+
 pub struct FileManager {
 }
 
@@ -33,11 +35,24 @@ impl PersistenceManager for FileManager {
     }
 
     fn load_config(config_type: ConfigType) -> Option<String> {
-        todo!()
+        let filename= get_config_filename(&config_type);
+        let file_text = fs::read_to_string(filename);
+        match file_text {
+            Ok(_file_text) => { Some(_file_text) }
+            Err(_) => {
+                None
+            }
+        }
+
     }
 
     fn save_config(config_type: ConfigType, config: String) {
-        todo!()
+        let filename= get_config_filename(&config_type);
+        let result = fs::write(filename, config);
+        match result {
+            Ok(_ok) => { _ok }
+            Err(_err) => { panic!("{}", _err.to_string()) }
+        }
     }
 }
 
@@ -45,6 +60,14 @@ fn get_data_filename(data_type: &DataType) -> PathBuf {
     match data_type {
         DataType::ReputationData => {
             get_data_dir().as_path().join(DATA_REPUTATIONS)
+        }
+    }
+}
+
+fn get_config_filename(config_type: &ConfigType) -> PathBuf {
+    match config_type {
+        ConfigType::Triggers => {
+            get_config_dir().as_path().join(CONFIG_TRIGGERS)
         }
     }
 }
@@ -82,10 +105,11 @@ fn get_project_dirs() -> Option<ProjectDirs> {
 
     match project_dir {
         Some(dir) => {
-            let dir_created = fs::create_dir_all(dir.data_dir());
-            match dir_created {
-                Ok(_) => Some(dir),
-                Err(_) => panic!("Cannot read directory"),
+            let data_dir_created = fs::create_dir_all(dir.data_dir());
+            let config_dir_created = fs::create_dir_all(dir.data_dir());
+            match (data_dir_created, config_dir_created) {
+                (Ok(_), Ok(_)) => Some(dir),
+                _ => panic!("Cannot read directory"),
             }
         },
         None => None,

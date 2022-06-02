@@ -4,7 +4,9 @@ pub enum DataType {
     ReputationData
 }
 
-pub enum ConfigType {}
+pub enum ConfigType {
+    Triggers
+}
 
 pub trait PersistenceManager{
     fn load_data(data_type:DataType) -> Option<String>;

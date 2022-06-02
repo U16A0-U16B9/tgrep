@@ -1,13 +1,12 @@
 use teloxide::types::Message;
 use teloxide::types::ChatId;
 use teloxide::types::UserId;
+use crate::services::config::triggers::TriggerType;
 
 use self::services::*;
-use self::triggers::TriggerType;
 pub mod triggers;
 pub mod services;
 
-#[derive(Clone)]
 pub struct MessageData {
     valid: bool,
     chat_id: ChatId,
@@ -19,8 +18,6 @@ pub struct MessageData {
     is_trigger: bool,
     trigger_type: TriggerType
 }
-
-
 
 impl MessageData {
     pub fn get_valid(& self) -> bool {
@@ -125,7 +122,7 @@ impl MessageData {
         data.set_is_trigger(get_is_message_trigger(&trigger_type));
         data.set_trigger_type(trigger_type);
 
-        data.set_valid(calculate_if_data_is_valid(&mut data.clone()));
+        data.set_valid(calculate_if_data_is_valid(&data));
 
         data
     }
