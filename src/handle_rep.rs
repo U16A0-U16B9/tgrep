@@ -13,6 +13,14 @@ pub struct Reputations {
     pub chats: HashMap<ChatId, HashMap<UserId, i64>>
 }
 
+impl Reputations {
+    pub fn new() -> Reputations {
+        Reputations {
+            chats: HashMap::new(),
+        }
+    }
+}
+
 pub struct HandledReputation {
     pub reciv_username: Option<String>,
     pub giver_username: Option<String>,
@@ -32,10 +40,6 @@ impl HandledReputation {
         let mut reputations = reputation_calculator::get_reputations();
         let (reciv_reputation, reputations) = reputation_calculator::calculate_reputation(data, &mut reputations);
         let _result = reputation_calculator::save_reputations(reputations);
-        match _result {
-            Err(_err) => panic!("{}", _err.to_string()),
-            _ => {},
-        }
 
         match data.get_trigger_type() {
             TriggerType::None => return None,
