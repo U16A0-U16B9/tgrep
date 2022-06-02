@@ -1,9 +1,8 @@
 use std::collections::HashMap;
-use std::fs;
 use crate::message_data::MessageData;
 use crate::message_data::triggers::TriggerType;
 use super::Reputations;
-use super::services;
+use crate::services::persistence_manager::{DataType, PersistenceManager, file_manager::FileManager};
 
 const ADD_STEP: i64 = 1;
 const SUB_STEP: i64 = -1;
@@ -50,34 +49,24 @@ pub fn calculate_reputation<'a>(data: &'a MessageData, reputations:&'a mut Reput
 }
 
 pub fn get_reputations() -> Reputations {
-    let filename = services::get_data_dir().as_path().join("reputations.json");
-    let reputation_text = fs::read_to_string(filename);
-    match reputation_text {
-        Ok(_text) => {
+    let reputation_text = FileManager::load_data(DataType::ReputationData);
+    return match reputation_text {
+        Some(_text) => {
             let v: Result<Reputations, serde_json::Error> = serde_json::from_str(_text.as_str());
             match v {
-                Ok(_reputations) => return _reputations,
-                Err(_) => {
-                    return  Reputations {
-                        chats: HashMap::new(),
-                    }
-                },
+                Ok(_reputations) => _reputations,
+                Err(_) =>  Reputations::new(),
             }
         },
-        Err(_) => {
-            return  Reputations {
-                chats: HashMap::new(),
-            }
-        },
+        None => Reputations::new(),
     }
 }
 
-pub fn save_reputations(reputations: &Reputations) -> Result<(), std::io::Error> {
-    let filename = services::get_data_dir().as_path().join("reputations.json");
+pub fn save_reputations(reputations: &Reputations) {
     let reputation_text = serde_json::to_string(&reputations);
     match reputation_text {
         Ok(_reputation_text) => {
-            fs::write(filename, _reputation_text)
+            FileManager::save_data(DataType::ReputationData, _reputation_text)
         },
         Err(_a) => panic!("{}", _a.to_string()),
     }

@@ -1,8 +1,11 @@
+extern crate core;
+
 use message_data::MessageData;
 use handle_rep::*;
 use teloxide::prelude::*;
 pub mod message_data;
 pub mod handle_rep;
+pub mod services;
 
 #[tokio::main]
 async fn main() {
