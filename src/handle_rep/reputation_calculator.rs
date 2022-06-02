@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use crate::message_data::MessageData;
-use crate::message_data::triggers::TriggerType;
+use crate::services::config::triggers::TriggerType;
 use super::Reputations;
 use crate::services::persistence_manager::{DataType, PersistenceManager, file_manager::FileManager};
 

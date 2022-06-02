@@ -1,7 +1,7 @@
 use teloxide::types::Message;
 use teloxide::types::User;
 use teloxide::types::UserId;
-use super::triggers::*;
+use crate::services::config::triggers::{Triggers, TriggerType};
 use super::MessageData;
 
 pub fn get_replied_user_id(message: &Message) -> Option<UserId> {
@@ -75,16 +75,16 @@ pub fn get_is_replied_user_bot(message: &Message) -> bool {
 }
 
 pub fn get_message_trigger_type(message: &Message) -> TriggerType {
-
+    let triggers = Triggers::load();
     match message.text() {
         Some(_text) => {
-            for trigger in POSITIVE_TRIGGERS.iter() {
+            for trigger in triggers.positive.iter() {
                 if _text.to_lowercase().contains(trigger) {
                     return TriggerType::Positive;
                 }
             }
 
-            for trigger in NEGATIVE_TRIGGERS.iter() {
+            for trigger in triggers.negative.iter() {
                 if _text.to_lowercase().contains(trigger) {
                     return TriggerType::Negative;
                 }
@@ -106,7 +106,7 @@ pub fn get_is_message_trigger(trigger_type: &TriggerType) -> bool {
     }
 }
 
-pub fn calculate_if_data_is_valid(data: &mut MessageData) -> bool {
+pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
     if !data.get_is_trigger() {
         return false;
     }

@@ -1,7 +1,7 @@
 use serde::{Serialize, Deserialize};
 use teloxide::types::{ChatId, UserId};
-use crate::message_data::triggers::TriggerType;
 use std::collections::HashMap;
+use crate::services::config::triggers::TriggerType;
 
 use super::MessageData;
 
