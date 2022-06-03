@@ -115,3 +115,65 @@ fn get_project_dirs() -> Option<ProjectDirs> {
         None => None,
     }
 }
+
+
+#[cfg(test)]
+mod file_manager_tests {
+    use crate::Reputations;
+    use crate::services::config::triggers::Triggers;
+    use super::*;
+
+    #[test]
+    fn test_get_project_dirs() {
+        get_project_dirs().unwrap();
+    }
+
+    #[test]
+    fn test_get_current_dirs() {
+        get_current_dir();
+    }
+
+    #[test]
+    fn test_get_data_filename() {
+        let rep_filename =get_data_filename(&DataType::ReputationData);
+        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(DATA_REPUTATIONS))
+    }
+
+    #[test]
+    fn test_get_config_filename() {
+        let rep_filename =get_config_filename(&ConfigType::Triggers);
+        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(CONFIG_TRIGGERS))
+    }
+
+    #[test]
+    fn test_load_data() {
+        let rep = FileManager::load_data(DataType::ReputationData)
+            .unwrap();
+
+        let _:Reputations = serde_json::from_str(&rep).unwrap();
+    }
+
+    #[test]
+    fn test_load_config() {
+        let trigger = FileManager::load_config(ConfigType::Triggers)
+            .unwrap();
+
+        let _:Triggers = serde_json::from_str(&trigger).unwrap();
+    }
+
+    #[test]
+    fn test_save_data() {
+        let rep = FileManager::load_data(DataType::ReputationData)
+            .unwrap();
+
+        FileManager::save_data(DataType::ReputationData, rep);
+    }
+
+    #[test]
+    fn test_save_config() {
+        let trigger = FileManager::load_config(ConfigType::Triggers)
+            .unwrap();
+
+        FileManager::save_config(ConfigType::Triggers, trigger);
+    }
+}
