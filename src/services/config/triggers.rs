@@ -64,3 +64,34 @@ impl Triggers {
         triggers
     }
 }
+
+#[cfg(test)]
+mod triggers_tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let triggers = Triggers::new();
+        assert_eq!(triggers.positive.len(), 2);
+        assert_eq!(triggers.negative.len(), 2);
+    }
+
+    #[test]
+    fn test_to_string() {
+        let triggers = Triggers::new().to_string().unwrap();
+        assert_ne!(triggers, String::from(""))
+    }
+
+    #[test]
+    fn test_load_save() {
+        let rand = String::from("bb3Yzr35ousfdg9ie9Km1jaOJD9Iq15V");
+        let mut triggers = Triggers::load();
+        triggers.positive.push(rand.clone());
+        Triggers::save(triggers);
+        let mut triggers = Triggers::load();
+        assert!(triggers.positive.contains(&rand));
+        // cleanup
+        triggers.positive.pop();
+        Triggers::save(triggers);
+    }
+}
