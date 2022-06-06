@@ -106,7 +106,7 @@ fn get_project_dirs() -> Option<ProjectDirs> {
     match project_dir {
         Some(dir) => {
             let data_dir_created = fs::create_dir_all(dir.data_dir());
-            let config_dir_created = fs::create_dir_all(dir.data_dir());
+            let config_dir_created = fs::create_dir_all(dir.config_dir());
             match (data_dir_created, config_dir_created) {
                 (Ok(_), Ok(_)) => Some(dir),
                 _ => panic!("Cannot read directory"),
