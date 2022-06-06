@@ -1,13 +1,12 @@
 use std::collections::HashMap;
-use crate::message_data::MessageData;
+use crate::app::message_data::MessageData;
 use crate::services::config::triggers::TriggerType;
-use super::Reputations;
-use crate::services::persistence_manager::{DataType, PersistenceManager, file_manager::FileManager};
+use crate::services::data::reputations::Reputations;
 
 const ADD_STEP: i64 = 1;
 const SUB_STEP: i64 = -1;
 
-pub fn calculate_reputation<'a>(data: &'a MessageData, reputations:&'a mut Reputations) -> (i64, &'a  Reputations) {
+pub fn calculate_reputation(data: &MessageData, mut reputations: Reputations) -> (i64,  Reputations) {
     let chat_rep = reputations.chats.get(&data.get_chat_id());
     let rep_reset:i64 = 0;
 
@@ -19,10 +18,10 @@ pub fn calculate_reputation<'a>(data: &'a MessageData, reputations:&'a mut Reput
                     match data.get_trigger_type() {
                         TriggerType::None => {},
                         TriggerType::Positive => {
-                            *reputations.chats.entry(data.get_chat_id()).or_default().entry(data.get_rep_reciv_user_id().unwrap()).or_default() += ADD_STEP;
+                            reputations = increment_reputation(data, reputations);
                         },
                         TriggerType::Negative => {
-                            *reputations.chats.entry(data.get_chat_id()).or_default().entry(data.get_rep_reciv_user_id().unwrap()).or_default() += SUB_STEP;
+                            reputations = decrement_reputation(data, reputations);
                         },
                     }
                 },
@@ -30,10 +29,10 @@ pub fn calculate_reputation<'a>(data: &'a MessageData, reputations:&'a mut Reput
                     match data.get_trigger_type() {
                         TriggerType::None => {},
                         TriggerType::Positive => {
-                            *reputations.chats.entry(data.get_chat_id()).or_default().entry(data.get_rep_reciv_user_id().unwrap()).or_default() = ADD_STEP;
+                            reputations = init_reputation(data, reputations, ADD_STEP);
                         },
                         TriggerType::Negative => {
-                            *reputations.chats.entry(data.get_chat_id()).or_default().entry(data.get_rep_reciv_user_id().unwrap()).or_default() = SUB_STEP;
+                            reputations = init_reputation(data, reputations, SUB_STEP);
                         },
                     }
                 },
@@ -45,30 +44,42 @@ pub fn calculate_reputation<'a>(data: &'a MessageData, reputations:&'a mut Reput
             reputations.chats.insert(data.get_chat_id(), user_rep);
         },
     }
-    (*reputations.chats.entry(data.get_chat_id()).or_default().entry(data.get_rep_reciv_user_id().unwrap()).or_default(), reputations)
+    (
+        *reputations.chats
+            .entry(data.get_chat_id())
+            .or_default()
+            .entry(data.get_rep_reciv_user_id().unwrap())
+            .or_default(),
+        reputations
+    )
 }
 
-pub fn get_reputations() -> Reputations {
-    let reputation_text = FileManager::load_data(DataType::ReputationData);
-    return match reputation_text {
-        Some(_text) => {
-            let v: Result<Reputations, serde_json::Error> = serde_json::from_str(_text.as_str());
-            match v {
-                Ok(_reputations) => _reputations,
-                Err(_) =>  Reputations::new(),
-            }
-        },
-        None => Reputations::new(),
-    }
+fn increment_reputation(data: &MessageData, mut reputations: Reputations) -> Reputations {
+    *reputations.chats
+        .entry(data.get_chat_id())
+        .or_default()
+        .entry(data.get_rep_reciv_user_id().unwrap())
+        .or_default() += ADD_STEP;
+
+    reputations
 }
 
-pub fn save_reputations(reputations: &Reputations) {
-    let reputation_text = serde_json::to_string(&reputations);
-    match reputation_text {
-        Ok(_reputation_text) => {
-            FileManager::save_data(DataType::ReputationData, _reputation_text)
-        },
-        Err(_a) => panic!("{}", _a.to_string()),
-    }
+fn decrement_reputation(data: &MessageData, mut reputations: Reputations) -> Reputations {
+    *reputations.chats
+        .entry(data.get_chat_id())
+        .or_default()
+        .entry(data.get_rep_reciv_user_id().unwrap())
+        .or_default() += SUB_STEP;
 
+    reputations
+}
+
+fn init_reputation(data: &MessageData, mut reputations: Reputations, rep: i64) -> Reputations {
+    *reputations.chats
+        .entry(data.get_chat_id())
+        .or_default()
+        .entry(data.get_rep_reciv_user_id().unwrap())
+        .or_default() = rep;
+
+    reputations
 }

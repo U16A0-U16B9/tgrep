@@ -119,7 +119,7 @@ fn get_project_dirs() -> Option<ProjectDirs> {
 
 #[cfg(test)]
 mod file_manager_tests {
-    use crate::Reputations;
+    use crate::services::data::reputations::Reputations;
     use crate::services::config::triggers::Triggers;
     use super::*;
 

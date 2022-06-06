@@ -59,7 +59,7 @@ impl Triggers {
             Ok(_trigger_text) => {
                 FileManager::save_config(ConfigType::Triggers, _trigger_text);
             }
-            Err(_) => {}
+            Err(_a) => { panic!("{}", _a.to_string()) }
         }
         triggers
     }

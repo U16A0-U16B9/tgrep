@@ -1,29 +1,13 @@
-use serde::{Serialize, Deserialize};
-use teloxide::types::{ChatId, UserId};
-use std::collections::HashMap;
 use crate::services::config::triggers::TriggerType;
+use crate::services::data::reputations::Reputations;
 
-use super::MessageData;
+use super::message_data::MessageData;
 
 mod reputation_calculator;
-mod services;
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Reputations {
-    pub chats: HashMap<ChatId, HashMap<UserId, i64>>
-}
-
-impl Reputations {
-    pub fn new() -> Reputations {
-        Reputations {
-            chats: HashMap::new(),
-        }
-    }
-}
 
 pub struct HandledReputation {
-    pub reciv_username: Option<String>,
-    pub giver_username: Option<String>,
+    pub reciv_username: String,
+    pub giver_username: String,
     pub operation: String,
     pub reciv_reputation: i64
 }
@@ -37,9 +21,9 @@ impl HandledReputation {
 
         let operation: String;
 
-        let mut reputations = reputation_calculator::get_reputations();
-        let (reciv_reputation, reputations) = reputation_calculator::calculate_reputation(data, &mut reputations);
-        let _result = reputation_calculator::save_reputations(reputations);
+        let reputations = Reputations::load();
+        let (reciv_reputation, reputations) = reputation_calculator::calculate_reputation(&data, reputations);
+        let _result = Reputations::save(reputations);
 
         match data.get_trigger_type() {
             TriggerType::None => return None,
@@ -47,9 +31,14 @@ impl HandledReputation {
             TriggerType::Negative => operation = "decreased".to_string(),
         }
 
+        let reciv_username = data.get_rep_reciv_user_name()
+            .as_ref().unwrap_or(&"Unknown".to_string()).clone();
+        let giver_username = data.get_rep_giver_user_name()
+            .as_ref().unwrap_or(&"Unknown".to_string()).clone();
+
         Some(HandledReputation {
-            reciv_username: data.get_rep_reciv_user_name().clone(),
-            giver_username: data.get_rep_giver_user_name().clone(),
+            reciv_username,
+            giver_username,
             operation,
             reciv_reputation
         })
