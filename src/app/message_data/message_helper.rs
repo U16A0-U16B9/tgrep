@@ -38,7 +38,7 @@ pub fn get_replied_user_name(message: &Message) -> Option<String> {
                 Some(_user) => {
                     generate_display_name(_user)
                 },
-                None => todo!(),
+                None => None,
             }
         }
         None => {
