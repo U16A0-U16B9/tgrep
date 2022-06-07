@@ -1,5 +1,4 @@
 pub mod triggers;
+pub mod settings;
 
-pub trait Config{
-    fn to_string(&self) -> Option<String>;
-}
+pub trait Config{}

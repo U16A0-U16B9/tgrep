@@ -10,6 +10,7 @@ const APPLICATION: &str = "tgbot";
 const DATA_REPUTATIONS: &str = "reputations.json";
 
 const CONFIG_TRIGGERS: &str = "triggers.json";
+const CONFIG_SETTINGS: &str = "settings.json";
 
 pub struct FileManager {
 }
@@ -68,6 +69,9 @@ fn get_config_filename(config_type: &ConfigType) -> PathBuf {
     match config_type {
         ConfigType::Triggers => {
             get_config_dir().as_path().join(CONFIG_TRIGGERS)
+        }
+        ConfigType::Settings => {
+            get_config_dir().as_path().join(CONFIG_SETTINGS)
         }
     }
 }
@@ -136,13 +140,16 @@ mod file_manager_tests {
     #[test]
     fn test_get_data_filename() {
         let rep_filename =get_data_filename(&DataType::ReputationData);
-        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(DATA_REPUTATIONS))
+        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(DATA_REPUTATIONS));
     }
 
     #[test]
     fn test_get_config_filename() {
         let rep_filename =get_config_filename(&ConfigType::Triggers);
-        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(CONFIG_TRIGGERS))
+        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(CONFIG_TRIGGERS));
+
+        let rep_filename =get_config_filename(&ConfigType::Settings);
+        assert!(rep_filename.file_name().unwrap().to_str().unwrap().eq(CONFIG_SETTINGS));
     }
 
     #[test]
