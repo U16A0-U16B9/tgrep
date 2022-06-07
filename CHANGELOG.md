@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `bot_id` - loads `TELOXIDE_TOKEN` to env from settings
   - `can_self_rep` - loads can user give rep to himself
   - `can_rep_bot` - loads can user give rep to bot
+  - `display_username` loads will username or full name will be displayed
+
+### Changed
+- Username or full name is displayed based on settings
 
 ## [0.1.0] - 2022-06-06
 
