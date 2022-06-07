@@ -13,7 +13,8 @@
 
 ## installation 
 
-As this is using [teloxide](https://github.com/teloxide/teloxide) framework make sure to set `TELOXIDE_TOKEN`
+As this is using [teloxide](https://github.com/teloxide/teloxide) framework make sure to set `TELOXIDE_TOKEN` by setting
+`bot_id` in settings config or by running:
 ```shell
 # Unix-like
 $ export TELOXIDE_TOKEN=<Your token here>
