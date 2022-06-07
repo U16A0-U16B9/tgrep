@@ -1,4 +1,4 @@
-use teloxide::types::Message;
+use teloxide::types::{Message};
 use teloxide::types::User;
 use teloxide::types::UserId;
 use crate::services::config::settings::Settings;
@@ -76,25 +76,19 @@ pub fn get_is_replied_user_bot(message: &Message) -> bool {
 }
 
 pub fn get_message_trigger_type(message: &Message) -> TriggerType {
-    let triggers = Triggers::load();
     match message.text() {
         Some(_text) => {
-            for trigger in triggers.positive.iter() {
-                if _text.to_lowercase().contains(trigger) {
-                    return TriggerType::Positive;
-                }
-            }
-
-            for trigger in triggers.negative.iter() {
-                if _text.to_lowercase().contains(trigger) {
-                    return TriggerType::Negative;
-                }
-            }
-
-            TriggerType::None
+            get_trigger_type(_text.to_string(), false)
         },
         None => {
-            TriggerType::None
+            match message.sticker() {
+                Some(_sticker) => {
+                    get_trigger_type(_sticker.clone().file_unique_id, true)
+                }
+                None => {
+                    return TriggerType::None;
+                }
+            }
         },
     }
 }
@@ -156,4 +150,23 @@ fn generate_display_name(user: &User) -> String {
             }
         }
     }
+}
+
+fn get_trigger_type(string: String, strict: bool) -> TriggerType {
+    let triggers = Triggers::load();
+    for trigger in triggers.positive.iter() {
+        if strict && string.contains(trigger)
+            || string.to_lowercase().contains(trigger) {
+            return TriggerType::Positive;
+        }
+    }
+
+    for trigger in triggers.negative.iter() {
+        if strict && string.contains(trigger)
+            || string.to_lowercase().contains(trigger) {
+            return TriggerType::Negative;
+        }
+    }
+
+    TriggerType::None
 }
