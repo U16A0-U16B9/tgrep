@@ -1,6 +1,7 @@
 use teloxide::types::Message;
 use teloxide::types::User;
 use teloxide::types::UserId;
+use crate::services::config::settings::Settings;
 use crate::services::config::triggers::{Triggers, TriggerType};
 use super::MessageData;
 
@@ -111,9 +112,12 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
         return false;
     }
 
-    if data.get_is_rep_reciv_bot() {
+    let settings = Settings::load();
+
+    if !settings.can_rep_bot && data.get_is_rep_reciv_bot() {
         return false;
     }
+
     let rep_giver_user_id;
     let rep_reciv_user_id;
 
@@ -127,7 +131,7 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
         None => return false,
     }
 
-    if rep_giver_user_id == rep_reciv_user_id {
+    if !settings.can_self_rep && rep_giver_user_id == rep_reciv_user_id {
         return false;
     }
 
