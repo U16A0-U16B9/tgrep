@@ -37,7 +37,7 @@ pub fn get_replied_user_name(message: &Message) -> Option<String> {
         Some(_replied) => {
             match _replied.from() {
                 Some(_user) => {
-                    generate_display_name(_user)
+                    Some(generate_display_name(_user))
                 },
                 None => None,
             }
@@ -51,7 +51,7 @@ pub fn get_replied_user_name(message: &Message) -> Option<String> {
 pub fn get_message_user_name(message: &Message) -> Option<String> {
     match message.from() {
         Some(_sender) => {
-            generate_display_name(_sender)
+            Some(generate_display_name(_sender))
         },
         None => {
             None
@@ -138,16 +138,22 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
     true
 }
 
-fn generate_display_name(user: &User)  -> Option<String> {
-    let firstname = &user.first_name;
-    let username = &user.username;
-    match username {
-        Some(_username) =>  {
-            Some(_username.to_string())
-        },
-        None => {
-            Some(firstname.to_string())
+fn generate_display_name(user: &User) -> String {
+    let settings = Settings::load();
+    let fullname = user.full_name();
+
+    if !settings.display_username {
+        fullname
+    }
+    else {
+        let username = &user.username;
+        match username {
+            Some(_username) =>  {
+                _username.to_string()
+            },
+            None => {
+                fullname
+            }
         }
     }
-
 }
