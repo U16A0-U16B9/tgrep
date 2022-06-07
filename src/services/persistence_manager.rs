@@ -5,7 +5,8 @@ pub enum DataType {
 }
 
 pub enum ConfigType {
-    Triggers
+    Triggers,
+    Settings
 }
 
 pub trait PersistenceManager{

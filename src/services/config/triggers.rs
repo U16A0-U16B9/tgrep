@@ -1,9 +1,8 @@
 use serde::{Serialize, Deserialize};
-use crate::services::config::Config;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use crate::services::persistence_manager::file_manager::FileManager;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize)]
 pub struct Triggers {
     pub positive: Vec<String>,
     pub negative: Vec<String>
@@ -13,16 +12,6 @@ pub enum TriggerType {
     None,
     Positive,
     Negative
-}
-
-impl Config for Triggers {
-    fn to_string(&self) -> Option<String> {
-        let triggers_json = serde_json::to_string(self);
-        match triggers_json {
-            Ok(_text) => { Some(_text) }
-            Err(_) => { None }
-        }
-    }
 }
 
 impl Triggers {
@@ -74,12 +63,6 @@ mod triggers_tests {
         let triggers = Triggers::new();
         assert_eq!(triggers.positive.len(), 2);
         assert_eq!(triggers.negative.len(), 2);
-    }
-
-    #[test]
-    fn test_to_string() {
-        let triggers = Triggers::new().to_string().unwrap();
-        assert_ne!(triggers, String::from(""))
     }
 
     #[test]

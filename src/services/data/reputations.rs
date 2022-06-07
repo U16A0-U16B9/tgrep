@@ -43,15 +43,7 @@ impl Reputations {
     }
 }
 
-impl Data for Reputations {
-    fn to_string(&self) -> Option<String> {
-        let triggers_json = serde_json::to_string(self);
-        match triggers_json {
-            Ok(_text) => { Some(_text) }
-            Err(_) => { None }
-        }
-    }
-}
+impl Data for Reputations {}
 
 #[cfg(test)]
 mod reputation_tests {
@@ -61,12 +53,6 @@ mod reputation_tests {
     fn test_new() {
         let reputations = Reputations::new();
         assert_eq!(reputations.chats.len(),0)
-    }
-
-    #[test]
-    fn test_to_string() {
-        let reputations = Reputations::new().to_string().unwrap();
-        assert_ne!(reputations, String::from(""))
     }
 
     #[test]

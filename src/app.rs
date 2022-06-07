@@ -2,12 +2,14 @@ use std::future::Future;
 use teloxide::prelude::*;
 use handle_rep::HandledReputation;
 use message_data::MessageData;
+use super::services::enviroment_variables;
 
 pub mod message_data;
 pub mod handle_rep;
 
 pub fn init() -> impl Future {
     pretty_env_logger::init();
+    enviroment_variables::load();
     let bot = Bot::from_env().auto_send();
 
     teloxide::repl(bot, |message: Message, bot: AutoSend<Bot>| async move {
