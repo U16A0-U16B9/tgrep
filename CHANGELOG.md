@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `can_self_rep` - loads can user give rep to himself
   - `can_rep_bot` - loads can user give rep to bot
   - `display_username` loads will username or full name will be displayed
+- reputation triggers now can be sticker by adding [`file_unique_id`](https://core.telegram.org/bots/api#sticker)
 
 ### Changed
 - Username or full name is displayed based on settings
