@@ -1,4 +1,3 @@
 pub mod reputations;
 
-pub trait Data{
-}
+pub trait Data{}
