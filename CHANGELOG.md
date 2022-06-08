@@ -13,9 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `can_rep_bot` - loads can user give rep to bot
   - `display_username` loads will username or full name will be displayed
 - reputation triggers now can be sticker by adding [`file_unique_id`](https://core.telegram.org/bots/api#sticker)
+- commands
+  - `/help` - shows all commands
+  - `/toprep {u32} ` - shows top 10 or top N users ranked by reputation
+- data
+  - user list so it can be mapped to `UserId`
 
 ### Changed
 - Username or full name is displayed based on settings
+
+### Removed
+- unused `to_string` trait function 
 
 ## [0.1.0] - 2022-06-06
 
