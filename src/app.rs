@@ -7,6 +7,7 @@ use super::services::enviroment_variables;
 pub mod message_data;
 pub mod handle_rep;
 pub mod handle_cmd;
+pub mod handle_user;
 
 pub fn init() -> impl Future {
     pretty_env_logger::init();
@@ -15,7 +16,7 @@ pub fn init() -> impl Future {
     let bot = Bot::from_env().auto_send();
 
     teloxide::repl(bot, |message: Message, bot: AutoSend<Bot>| async move {
-
+        handle_user::save_user(&message);
         let data = MessageData::get_data(&message);
         let (is_command, command_message) = handle_cmd::execute(&message);
         if is_command {
