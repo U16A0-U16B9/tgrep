@@ -1,11 +1,14 @@
 use teloxide::types::{Message};
 use crate::services::commands::help::Help;
+use crate::services::commands::toprep::TopRep;
 
 pub mod help;
+pub mod toprep;
 
 pub fn get_command_list() -> Vec<&'static dyn Command> {
     vec![
-        &Help {}
+        &Help {},
+        &TopRep {}
     ]
 }
 
@@ -44,6 +47,19 @@ pub fn is_command_match(message: &Message, command: &str) -> bool {
         None => { valid = false; }
         Some(_text) => {
             if _text != command {
+                valid = false;
+            }
+        }
+    }
+    valid
+}
+
+pub fn is_command_match_with_param(message: &Message, command: &str) -> bool {
+    let mut valid= true;
+    match  message.text() {
+        None => { valid = false; }
+        Some(_text) => {
+            if !_text.to_string().starts_with((command.to_string() + " ").as_str()) {
                 valid = false;
             }
         }

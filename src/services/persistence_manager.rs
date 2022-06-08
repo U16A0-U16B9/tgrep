@@ -1,7 +1,8 @@
 pub mod file_manager;
 
 pub enum DataType {
-    ReputationData
+    ReputationData,
+    UserList
 }
 
 pub enum ConfigType {
