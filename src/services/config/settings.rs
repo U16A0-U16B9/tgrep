@@ -8,7 +8,8 @@ pub struct Settings {
     pub can_self_rep: bool,
     pub can_rep_bot: bool,
     pub display_username: bool,
-    pub save_history: bool
+    pub save_history: bool,
+    pub disable_multiple_reps: bool
 }
 
 impl Settings {
@@ -18,7 +19,8 @@ impl Settings {
             can_self_rep: false,
             can_rep_bot: false,
             display_username: false,
-            save_history: true
+            save_history: true,
+            disable_multiple_reps: true
         }
     }
 

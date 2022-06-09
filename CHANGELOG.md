@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `can_self_rep` - loads can user give rep to himself
   - `can_rep_bot` - loads can user give rep to bot
   - `display_username` loads will username or full name will be displayed
+  - `save_history` - if checked it will save history of reputations
+  - `disable_multiple_reps` if checked it will disable multiple reputation by same person to same message
 - reputation triggers now can be sticker by adding [`file_unique_id`](https://core.telegram.org/bots/api#sticker)
 - commands
   - `/help` - shows all commands
