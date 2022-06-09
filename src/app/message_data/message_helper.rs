@@ -141,6 +141,10 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
         return false;
     }
 
+    if settings.disable_multiple_reps && data.is_duplicate {
+        return false;
+    }
+
     true
 }
 
