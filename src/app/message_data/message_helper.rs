@@ -1,8 +1,9 @@
-use teloxide::types::{Message};
+use teloxide::types::{Message, MessageId};
 use teloxide::types::User;
 use teloxide::types::UserId;
 use crate::services::config::settings::Settings;
 use crate::services::config::triggers::{Triggers, TriggerType};
+use crate::services::data::reputation_history::{ReputationHistory};
 use super::MessageData;
 
 pub fn get_replied_user_id(message: &Message) -> Option<UserId> {
@@ -41,6 +42,17 @@ pub fn get_replied_user_name(message: &Message) -> Option<String> {
                 },
                 None => None,
             }
+        }
+        None => {
+            None
+        },
+    }
+}
+
+pub fn get_replied_message_id(message: &Message) -> Option<MessageId> {
+    match message.reply_to_message() {
+        Some(replied) => {
+            Some(MessageId { message_id: replied.id })
         }
         None => {
             None
@@ -130,6 +142,22 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
     }
 
     true
+}
+
+pub fn is_duplicate_reputation(data: &MessageData) -> bool {
+    let reputation_history = ReputationHistory::load();
+    return match reputation_history.chats.get(&data.get_chat_id()) {
+        None => { false }
+        Some(chat_reputation_history) => {
+            for reputation_history_item in chat_reputation_history {
+                if reputation_history_item.sender == data.get_rep_giver_user_id()
+                    && reputation_history_item.reply_message_id == data.get_reply_message_id() {
+                    return true;
+                }
+            }
+            false
+        }
+    }
 }
 
 fn generate_display_name(user: &User) -> String {
