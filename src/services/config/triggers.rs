@@ -8,6 +8,7 @@ pub struct Triggers {
     pub negative: Vec<String>
 }
 
+#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum TriggerType {
     None,
     Positive,

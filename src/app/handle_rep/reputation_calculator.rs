@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use crate::app::message_data::MessageData;
 use crate::services::config::triggers::TriggerType;
+use crate::services::data::reputation_history::{ReputationHistory, ReputationHistoryItem};
 use crate::services::data::reputations::Reputations;
 
 const ADD_STEP: i64 = 1;
@@ -52,6 +53,20 @@ pub fn calculate_reputation(data: &MessageData, mut reputations: Reputations) ->
             .or_default(),
         reputations
     )
+}
+
+pub fn save_reputation_to_history(data: &MessageData) {
+    let rep_history_item = ReputationHistoryItem::new(data);
+    let mut rep_history = ReputationHistory::load();
+    match rep_history.chats.get(&data.get_chat_id()) {
+        None => {
+            rep_history.chats.insert(data.get_chat_id(), vec![rep_history_item]);
+        }
+        Some(_) => {
+            rep_history.chats.entry(data.get_chat_id()).or_default().push(rep_history_item);
+        }
+    }
+    ReputationHistory::save(rep_history);
 }
 
 fn increment_reputation(data: &MessageData, mut reputations: Reputations) -> Reputations {

@@ -7,7 +7,8 @@ pub struct Settings {
     pub bot_id: Option<String>,
     pub can_self_rep: bool,
     pub can_rep_bot: bool,
-    pub display_username: bool
+    pub display_username: bool,
+    pub save_history: bool
 }
 
 impl Settings {
@@ -16,7 +17,8 @@ impl Settings {
             bot_id: None,
             can_self_rep: false,
             can_rep_bot: false,
-            display_username: false
+            display_username: false,
+            save_history: true
         }
     }
 
@@ -57,6 +59,7 @@ mod settings_tests {
         assert_eq!(settings.can_self_rep, false);
         assert_eq!(settings.can_rep_bot, false);
         assert_eq!(settings.display_username, false);
+        assert_eq!(settings.save_history, true);
     }
 
     #[test]

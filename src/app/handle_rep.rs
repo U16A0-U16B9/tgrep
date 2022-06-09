@@ -1,3 +1,4 @@
+use crate::services::config::settings::Settings;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::reputations::Reputations;
 
@@ -35,6 +36,11 @@ impl HandledReputation {
             .as_ref().unwrap_or(&"Unknown".to_string()).clone();
         let giver_username = data.get_rep_giver_user_name()
             .as_ref().unwrap_or(&"Unknown".to_string()).clone();
+
+        let settings = Settings::load();
+        if settings.save_history {
+            reputation_calculator::save_reputation_to_history(data);
+        }
 
         Some(HandledReputation {
             reciv_username,
