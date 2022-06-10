@@ -1,23 +1,21 @@
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use teloxide::types::{ChatId, UserId};
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{DataType, PersistenceManager};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use teloxide::types::{ChatId, UserId};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Reputations {
-    pub chats: HashMap<ChatId, HashMap<UserId, i64>>
+    pub chats: HashMap<ChatId, HashMap<UserId, i64>>,
 }
 
 impl Reputations {
     pub fn new() -> Reputations {
-        Reputations {
-            chats: HashMap::new(),
-        }
+        Reputations { chats: HashMap::new() }
     }
 
-    pub fn load() -> Reputations{
+    pub fn load() -> Reputations {
         let reputation_text = FileManager::load_data(DataType::ReputationData);
         return match reputation_text {
             Some(_text) => {
@@ -26,17 +24,15 @@ impl Reputations {
                     Ok(_reputations) => _reputations,
                     Err(_) => Reputations::new(),
                 }
-            },
+            }
             None => Reputations::new(),
-        }
+        };
     }
 
-    pub fn save(reputations: Reputations) -> Reputations{
+    pub fn save(reputations: Reputations) -> Reputations {
         let reputation_text = serde_json::to_string(&reputations);
         match reputation_text {
-            Ok(_reputation_text) => {
-                FileManager::save_data(DataType::ReputationData, _reputation_text)
-            },
+            Ok(_reputation_text) => FileManager::save_data(DataType::ReputationData, _reputation_text),
             Err(_a) => panic!("{}", _a.to_string()),
         }
         reputations
@@ -52,14 +48,14 @@ mod reputation_tests {
     #[test]
     fn test_new() {
         let reputations = Reputations::new();
-        assert_eq!(reputations.chats.len(),0)
+        assert_eq!(reputations.chats.len(), 0)
     }
 
     #[test]
     fn test_load_save() {
         let chat_id = ChatId(0xAA);
         let user_id = UserId(17);
-        let rep:i64 = 1337;
+        let rep: i64 = 1337;
         let mut reputations = Reputations::load();
 
         let mut user_rep = HashMap::new();

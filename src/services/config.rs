@@ -1,4 +1,4 @@
-pub mod triggers;
 pub mod settings;
+pub mod triggers;
 
-pub trait Config{}
+pub trait Config {}

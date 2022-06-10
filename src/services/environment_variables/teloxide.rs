@@ -1,5 +1,5 @@
-use std::env;
 use crate::services::config::settings::Settings;
+use std::env;
 
 const TELOXIDE_ENV_KEY: &str = "TELOXIDE_TOKEN";
 

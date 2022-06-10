@@ -1,5 +1,5 @@
-pub mod services;
 mod app;
+pub mod services;
 
 #[tokio::main]
 async fn main() {
