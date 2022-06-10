@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Settings {
@@ -9,7 +9,7 @@ pub struct Settings {
     pub can_rep_bot: bool,
     pub display_username: bool,
     pub save_history: bool,
-    pub disable_multiple_reps: bool
+    pub disable_multiple_reps: bool,
 }
 
 impl Settings {
@@ -20,19 +20,20 @@ impl Settings {
             can_rep_bot: false,
             display_username: false,
             save_history: true,
-            disable_multiple_reps: true
+            disable_multiple_reps: true,
         }
     }
 
     pub fn load() -> Settings {
         let settings_text = FileManager::load_config(ConfigType::Settings);
         match settings_text {
-            None => { Self::save(Self::new()) }
+            None => Self::save(Self::new()),
             Some(_settings_text) => {
-                let settings_result: Result<Settings, serde_json::Error> = serde_json::from_str(_settings_text.as_str());
+                let settings_result: Result<Settings, serde_json::Error> =
+                    serde_json::from_str(_settings_text.as_str());
                 match settings_result {
-                    Ok(_settings) => {  _settings }
-                    _ => {  Self::save(Self::new()) }
+                    Ok(_settings) => _settings,
+                    _ => Self::save(Self::new()),
                 }
             }
         }
@@ -44,7 +45,9 @@ impl Settings {
             Ok(_settings_text) => {
                 FileManager::save_config(ConfigType::Settings, _settings_text);
             }
-            Err(_a) => { panic!("{}", _a.to_string()) }
+            Err(_a) => {
+                panic!("{}", _a.to_string())
+            }
         }
         settings
     }

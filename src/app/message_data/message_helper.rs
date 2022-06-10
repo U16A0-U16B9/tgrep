@@ -1,105 +1,69 @@
-use teloxide::types::{Message, MessageId};
+use super::MessageData;
+use crate::services::config::settings::Settings;
+use crate::services::config::triggers::{TriggerType, Triggers};
+use crate::services::data::reputation_history::ReputationHistory;
 use teloxide::types::User;
 use teloxide::types::UserId;
-use crate::services::config::settings::Settings;
-use crate::services::config::triggers::{Triggers, TriggerType};
-use crate::services::data::reputation_history::{ReputationHistory};
-use super::MessageData;
+use teloxide::types::{Message, MessageId};
 
 pub fn get_replied_user_id(message: &Message) -> Option<UserId> {
     match message.reply_to_message() {
-        Some(_replied) => {
-            match _replied.from() {
-                Some(_user) => {
-                    Some(_user.id)
-                },
-                None => None,
-            }
-        }
-        None => {
-            None
+        Some(_replied) => match _replied.from() {
+            Some(_user) => Some(_user.id),
+            None => None,
         },
+        None => None,
     }
 }
 
 pub fn get_message_user_id(message: &Message) -> Option<UserId> {
     match message.from() {
-        Some(_sender) => {
-            Some(_sender.id)
-        },
-        None => {
-            None
-        },
+        Some(_sender) => Some(_sender.id),
+        None => None,
     }
 }
 
 pub fn get_replied_user_name(message: &Message) -> Option<String> {
     match message.reply_to_message() {
-        Some(_replied) => {
-            match _replied.from() {
-                Some(_user) => {
-                    Some(generate_display_name(_user))
-                },
-                None => None,
-            }
-        }
-        None => {
-            None
+        Some(_replied) => match _replied.from() {
+            Some(_user) => Some(generate_display_name(_user)),
+            None => None,
         },
+        None => None,
     }
 }
 
 pub fn get_replied_message_id(message: &Message) -> Option<MessageId> {
     match message.reply_to_message() {
-        Some(replied) => {
-            Some(MessageId { message_id: replied.id })
-        }
-        None => {
-            None
-        },
+        Some(replied) => Some(MessageId { message_id: replied.id }),
+        None => None,
     }
 }
 
 pub fn get_message_user_name(message: &Message) -> Option<String> {
     match message.from() {
-        Some(_sender) => {
-            Some(generate_display_name(_sender))
-        },
-        None => {
-            None
-        },
+        Some(_sender) => Some(generate_display_name(_sender)),
+        None => None,
     }
 }
 
 pub fn get_is_replied_user_bot(message: &Message) -> bool {
     match message.reply_to_message() {
-        Some(_replied) => {
-            match _replied.from() {
-                Some(_user) => {
-                    _user.is_bot
-                },
-                None => false,
-            }
-        }
-        None => {
-            false
+        Some(_replied) => match _replied.from() {
+            Some(_user) => _user.is_bot,
+            None => false,
         },
+        None => false,
     }
 }
 
 pub fn get_message_trigger_type(message: &Message) -> TriggerType {
     match message.text() {
-        Some(_text) => {
-            get_trigger_type(_text.to_string(), false)
-        },
-        None => {
-            match message.sticker() {
-                Some(_sticker) => {
-                    get_trigger_type(_sticker.clone().file_unique_id, true)
-                }
-                None => {
-                    return TriggerType::None;
-                }
+        Some(_text) => get_trigger_type(_text.to_string(), false),
+        None => match message.sticker() {
+            Some(_sticker) => get_trigger_type(_sticker.clone().file_unique_id, true),
+            None => {
+                return TriggerType::None;
             }
         },
     }
@@ -151,17 +115,18 @@ pub fn calculate_if_data_is_valid(data: &MessageData) -> bool {
 pub fn is_duplicate_reputation(data: &MessageData) -> bool {
     let reputation_history = ReputationHistory::load();
     return match reputation_history.chats.get(&data.get_chat_id()) {
-        None => { false }
+        None => false,
         Some(chat_reputation_history) => {
             for reputation_history_item in chat_reputation_history {
                 if reputation_history_item.sender == data.get_rep_giver_user_id()
-                    && reputation_history_item.reply_message_id == data.get_reply_message_id() {
+                    && reputation_history_item.reply_message_id == data.get_reply_message_id()
+                {
                     return true;
                 }
             }
             false
         }
-    }
+    };
 }
 
 fn generate_display_name(user: &User) -> String {
@@ -170,16 +135,11 @@ fn generate_display_name(user: &User) -> String {
 
     if !settings.display_username {
         fullname
-    }
-    else {
+    } else {
         let username = &user.username;
         match username {
-            Some(_username) =>  {
-                _username.to_string()
-            },
-            None => {
-                fullname
-            }
+            Some(_username) => _username.to_string(),
+            None => fullname,
         }
     }
 }
@@ -187,15 +147,13 @@ fn generate_display_name(user: &User) -> String {
 fn get_trigger_type(string: String, strict: bool) -> TriggerType {
     let triggers = Triggers::load();
     for trigger in triggers.positive.iter() {
-        if strict && string.contains(trigger)
-            || string.to_lowercase().contains(trigger) {
+        if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
             return TriggerType::Positive;
         }
     }
 
     for trigger in triggers.negative.iter() {
-        if strict && string.contains(trigger)
-            || string.to_lowercase().contains(trigger) {
+        if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
             return TriggerType::Negative;
         }
     }

@@ -1,5 +1,5 @@
+pub mod reputation_history;
 pub mod reputations;
 pub mod user_list;
-pub mod reputation_history;
 
-pub trait Data{}
+pub trait Data {}

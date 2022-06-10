@@ -1,15 +1,15 @@
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use teloxide::types::{ChatId, MessageId, UserId};
 use crate::app::message_data::MessageData;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{DataType, PersistenceManager};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use teloxide::types::{ChatId, MessageId, UserId};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ReputationHistory {
-    pub chats: HashMap<ChatId, Vec<ReputationHistoryItem>>
+    pub chats: HashMap<ChatId, Vec<ReputationHistoryItem>>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -23,12 +23,10 @@ pub struct ReputationHistoryItem {
 
 impl ReputationHistory {
     pub fn new() -> ReputationHistory {
-        ReputationHistory {
-            chats: HashMap::new(),
-        }
+        ReputationHistory { chats: HashMap::new() }
     }
 
-    pub fn load() -> ReputationHistory{
+    pub fn load() -> ReputationHistory {
         let reputation_history_text = FileManager::load_data(DataType::ReputationHistory);
         return match reputation_history_text {
             Some(_text) => {
@@ -37,17 +35,17 @@ impl ReputationHistory {
                     Ok(_reputations) => _reputations,
                     Err(_) => ReputationHistory::new(),
                 }
-            },
+            }
             None => ReputationHistory::new(),
-        }
+        };
     }
 
-    pub fn save(reputations: ReputationHistory) -> ReputationHistory{
+    pub fn save(reputations: ReputationHistory) -> ReputationHistory {
         let reputation_history_text = serde_json::to_string(&reputations);
         match reputation_history_text {
             Ok(_reputation_history_text) => {
                 FileManager::save_data(DataType::ReputationHistory, _reputation_history_text)
-            },
+            }
             Err(_a) => panic!("{}", _a.to_string()),
         }
         reputations
@@ -61,10 +59,9 @@ impl ReputationHistoryItem {
             receiver: data.get_rep_reciv_user_id(),
             message_id: data.get_message_id(),
             reply_message_id: data.get_reply_message_id(),
-            trigger_type: *data.get_trigger_type()
+            trigger_type: *data.get_trigger_type(),
         }
     }
 }
 
 impl Data for ReputationHistory {}
-

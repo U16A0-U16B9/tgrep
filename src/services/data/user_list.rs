@@ -1,14 +1,14 @@
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use teloxide::prelude::UserId;
-use teloxide::types::User;
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{DataType, PersistenceManager};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use teloxide::prelude::UserId;
+use teloxide::types::User;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserList {
-    pub user_list: HashMap<UserId, User>
+    pub user_list: HashMap<UserId, User>,
 }
 
 impl UserList {
@@ -18,7 +18,7 @@ impl UserList {
         }
     }
 
-    pub fn load() -> UserList{
+    pub fn load() -> UserList {
         let user_list_text = FileManager::load_data(DataType::UserList);
         return match user_list_text {
             Some(_text) => {
@@ -27,17 +27,15 @@ impl UserList {
                     Ok(_reputations) => _reputations,
                     Err(_) => UserList::new(),
                 }
-            },
+            }
             None => UserList::new(),
-        }
+        };
     }
 
-    pub fn save(reputations: UserList) -> UserList{
+    pub fn save(reputations: UserList) -> UserList {
         let user_list_text = serde_json::to_string(&reputations);
         match user_list_text {
-            Ok(_user_list_text) => {
-                FileManager::save_data(DataType::UserList, _user_list_text)
-            },
+            Ok(_user_list_text) => FileManager::save_data(DataType::UserList, _user_list_text),
             Err(_a) => panic!("{}", _a.to_string()),
         }
         reputations
@@ -46,7 +44,6 @@ impl UserList {
 
 impl Data for UserList {}
 
-
 #[cfg(test)]
 mod reputation_tests {
     use super::*;
@@ -54,7 +51,7 @@ mod reputation_tests {
     #[test]
     fn test_new() {
         let users = UserList::new();
-        assert_eq!(users.user_list.len(),0)
+        assert_eq!(users.user_list.len(), 0)
     }
 
     #[test]
@@ -66,9 +63,8 @@ mod reputation_tests {
             first_name: "test".to_string(),
             last_name: None,
             username: None,
-            language_code: None
+            language_code: None,
         };
-
 
         let mut users = UserList::load();
         users.user_list.insert(user_id, user);

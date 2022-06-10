@@ -1,43 +1,38 @@
-use serde::{Serialize, Deserialize};
-use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use crate::services::persistence_manager::file_manager::FileManager;
+use crate::services::persistence_manager::{ConfigType, PersistenceManager};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Triggers {
     pub positive: Vec<String>,
-    pub negative: Vec<String>
+    pub negative: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum TriggerType {
     None,
     Positive,
-    Negative
+    Negative,
 }
 
 impl Triggers {
     pub fn new() -> Triggers {
         Triggers {
-            negative: vec![
-                String::from("minus"),
-                String::from("-"),
-            ],
-            positive: vec![
-                String::from("plus"),
-                String::from("+"),
-            ]
+            negative: vec![String::from("minus"), String::from("-")],
+            positive: vec![String::from("plus"), String::from("+")],
         }
     }
 
     pub fn load() -> Triggers {
         let triggers_text = FileManager::load_config(ConfigType::Triggers);
         match triggers_text {
-            None => { Self::save(Self::new()) }
+            None => Self::save(Self::new()),
             Some(_triggers_text) => {
-                let triggers_result: Result<Triggers, serde_json::Error> = serde_json::from_str(_triggers_text.as_str());
+                let triggers_result: Result<Triggers, serde_json::Error> =
+                    serde_json::from_str(_triggers_text.as_str());
                 match triggers_result {
-                    Ok(_triggers) => {  _triggers }
-                    _ => {  Self::save(Self::new()) }
+                    Ok(_triggers) => _triggers,
+                    _ => Self::save(Self::new()),
                 }
             }
         }
@@ -49,7 +44,9 @@ impl Triggers {
             Ok(_trigger_text) => {
                 FileManager::save_config(ConfigType::Triggers, _trigger_text);
             }
-            Err(_a) => { panic!("{}", _a.to_string()) }
+            Err(_a) => {
+                panic!("{}", _a.to_string())
+            }
         }
         triggers
     }

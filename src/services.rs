@@ -1,5 +1,5 @@
-pub mod persistence_manager;
+pub mod commands;
 pub mod config;
 pub mod data;
-pub mod enviroment_variables;
-pub mod commands;
+pub mod environment_variables;
+pub mod persistence_manager;
