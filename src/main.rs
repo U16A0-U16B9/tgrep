@@ -1,4 +1,5 @@
 mod app;
+pub mod objects;
 pub mod services;
 
 #[tokio::main]

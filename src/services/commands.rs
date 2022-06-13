@@ -14,6 +14,7 @@ pub trait Command {
     fn execute(&self, message: &Message);
     fn response(&self, message: &Message) -> String;
     fn description(&self) -> String;
+    fn whoami(&self) -> &str;
 }
 
 pub fn default_command_validation(message: &Message) -> bool {

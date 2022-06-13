@@ -1,6 +1,7 @@
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{DataType, PersistenceManager};
+use log::error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use teloxide::types::{ChatId, UserId};
@@ -33,7 +34,10 @@ impl Reputations {
         let reputation_text = serde_json::to_string(&reputations);
         match reputation_text {
             Ok(_reputation_text) => FileManager::save_data(DataType::ReputationData, _reputation_text),
-            Err(_a) => panic!("{}", _a.to_string()),
+            Err(err) => {
+                error!("Cannot save {}", DataType::ReputationData.to_string());
+                panic!("{}", err.to_string())
+            }
         }
         reputations
     }

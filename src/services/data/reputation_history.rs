@@ -3,6 +3,7 @@ use crate::services::config::triggers::TriggerType;
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{DataType, PersistenceManager};
+use log::error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use teloxide::types::{ChatId, MessageId, UserId};
@@ -46,7 +47,10 @@ impl ReputationHistory {
             Ok(_reputation_history_text) => {
                 FileManager::save_data(DataType::ReputationHistory, _reputation_history_text)
             }
-            Err(_a) => panic!("{}", _a.to_string()),
+            Err(err) => {
+                error!("Cannot save {}", DataType::ReputationHistory.to_string());
+                panic!("{}", err.to_string())
+            }
         }
         reputations
     }
