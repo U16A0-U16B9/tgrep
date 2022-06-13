@@ -70,8 +70,7 @@ impl ReputationHistoryItem {
 
 impl PartialEq for ReputationHistoryItem {
     fn eq(&self, other: &Self) -> bool {
-        self.message_id == other.message_id
-            && self.reply_message_id == other.reply_message_id
+        self.message_id == other.message_id && self.reply_message_id == other.reply_message_id
     }
 }
 
@@ -80,7 +79,6 @@ impl Data for ReputationHistory {}
 #[cfg(test)]
 mod reputation_history_tests {
     use super::*;
-
 
     #[test]
     fn test_new() {
@@ -95,20 +93,20 @@ mod reputation_history_tests {
             sender: Some(UserId(17)),
             receiver: Some(UserId(33)),
             message_id: MessageId { message_id: 404 },
-            reply_message_id: Some(MessageId { message_id: 403}),
-            trigger_type: TriggerType::Positive
+            reply_message_id: Some(MessageId { message_id: 403 }),
+            trigger_type: TriggerType::Positive,
         };
 
         let mut reputation_history = ReputationHistory::load();
         reputation_history.chats.insert(chat_id, vec![reputation_history_item]);
 
-
         ReputationHistory::save(reputation_history);
         let mut reputation_history = ReputationHistory::load();
 
-
         assert!(reputation_history.chats.contains_key(&chat_id));
-        assert!(reputation_history.chats[&chat_id].iter().any(|&i| i == reputation_history_item));
+        assert!(reputation_history.chats[&chat_id]
+            .iter()
+            .any(|&i| i == reputation_history_item));
 
         // cleanup
         reputation_history.chats.remove(&chat_id);
