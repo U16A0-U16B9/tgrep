@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2022-06-13
+
 ### Added
 - settings
   - `bot_id` - loads `TELOXIDE_TOKEN` to env from settings
@@ -20,9 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `/toprep {u32} ` - shows top 10 or top N users ranked by reputation
 - data
   - user list so it can be mapped to `UserId`
+  - reputation history file where to store all reputation messages
+- more unit tests added
 
 ### Changed
 - Username or full name is displayed based on settings
+- Refactored code
 
 ### Removed
 - unused `to_string` trait function 
