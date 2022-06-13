@@ -1,11 +1,10 @@
+use crate::objects::user;
 use crate::services::commands;
 use crate::services::commands::Command;
-use crate::services::config::settings::Settings;
 use crate::services::data::reputations::Reputations;
 use crate::services::data::user_list::UserList;
 use std::cmp;
 use teloxide::prelude::{Message, UserId};
-use teloxide::types::User;
 
 const TOP_REP_COMMAND_TRIGGER: &str = "/toprep";
 const DEFAULT_TOP_REP_LIMIT: usize = 10;
@@ -37,9 +36,9 @@ impl Command for TopRep {
 
                 for (user, rep) in sorted {
                     match users.user_list.get(user) {
-                        None => response.push_str(format!("{} - {}\n", user.0, rep).as_str()),
+                        None => response.push_str(format!("{} \t\t {}\n", user.0, rep).as_str()),
                         Some(_user) => {
-                            response.push_str(format!("{} - {}\n", generate_display_name(_user), rep).as_str())
+                            response.push_str(format!("{} \t\t {}\n", user::generate_display_name(_user), rep).as_str())
                         }
                     }
                 }
@@ -52,20 +51,9 @@ impl Command for TopRep {
     fn description(&self) -> String {
         commands::parse_description(TOP_REP_COMMAND_TRIGGER, "Displays top reputations")
     }
-}
 
-fn generate_display_name(user: &User) -> String {
-    let settings = Settings::load();
-    let fullname = user.full_name();
-
-    if !settings.display_username {
-        fullname
-    } else {
-        let username = &user.username;
-        match username {
-            Some(_username) => _username.to_string(),
-            None => fullname,
-        }
+    fn whoami(&self) -> &str {
+        TOP_REP_COMMAND_TRIGGER
     }
 }
 

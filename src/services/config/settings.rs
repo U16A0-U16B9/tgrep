@@ -1,5 +1,6 @@
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
+use log::error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -46,6 +47,7 @@ impl Settings {
                 FileManager::save_config(ConfigType::Settings, _settings_text);
             }
             Err(_a) => {
+                error!("Cannot save {}", ConfigType::Settings.to_string());
                 panic!("{}", _a.to_string())
             }
         }

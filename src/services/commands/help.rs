@@ -23,4 +23,8 @@ impl Command for Help {
     fn description(&self) -> String {
         commands::parse_description(HELP_COMMAND_TRIGGER, "Displays this message")
     }
+
+    fn whoami(&self) -> &str {
+        HELP_COMMAND_TRIGGER
+    }
 }

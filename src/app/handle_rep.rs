@@ -1,3 +1,4 @@
+use crate::objects::messages::ParseMessage;
 use crate::services::config::settings::Settings;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::reputations::Reputations;
@@ -53,5 +54,14 @@ impl HandledReputation {
             operation,
             reciv_reputation,
         })
+    }
+}
+
+impl ParseMessage for HandledReputation {
+    fn parse(&self) -> String {
+        format!(
+            "{} has {} reputation of {} to {}",
+            self.giver_username, self.operation, self.reciv_username, self.reciv_reputation
+        )
     }
 }

@@ -1,8 +1,8 @@
 use super::MessageData;
+use crate::objects::user;
 use crate::services::config::settings::Settings;
 use crate::services::config::triggers::{TriggerType, Triggers};
 use crate::services::data::reputation_history::ReputationHistory;
-use teloxide::types::User;
 use teloxide::types::UserId;
 use teloxide::types::{Message, MessageId};
 
@@ -26,7 +26,7 @@ pub fn get_message_user_id(message: &Message) -> Option<UserId> {
 pub fn get_replied_user_name(message: &Message) -> Option<String> {
     match message.reply_to_message() {
         Some(_replied) => match _replied.from() {
-            Some(_user) => Some(generate_display_name(_user)),
+            Some(_user) => Some(user::generate_display_name(_user)),
             None => None,
         },
         None => None,
@@ -42,7 +42,7 @@ pub fn get_replied_message_id(message: &Message) -> Option<MessageId> {
 
 pub fn get_message_user_name(message: &Message) -> Option<String> {
     match message.from() {
-        Some(_sender) => Some(generate_display_name(_sender)),
+        Some(_sender) => Some(user::generate_display_name(_sender)),
         None => None,
     }
 }
@@ -127,21 +127,6 @@ pub fn is_duplicate_reputation(data: &MessageData) -> bool {
             false
         }
     };
-}
-
-fn generate_display_name(user: &User) -> String {
-    let settings = Settings::load();
-    let fullname = user.full_name();
-
-    if !settings.display_username {
-        fullname
-    } else {
-        let username = &user.username;
-        match username {
-            Some(_username) => _username.to_string(),
-            None => fullname,
-        }
-    }
 }
 
 fn get_trigger_type(string: String, strict: bool) -> TriggerType {
