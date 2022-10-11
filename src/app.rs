@@ -4,6 +4,7 @@ use handle_rep::HandledReputation;
 use message_data::MessageData;
 use std::future::Future;
 use teloxide::prelude::*;
+use crate::services::bootstrap;
 
 pub mod handle_cmd;
 pub mod handle_rep;
@@ -12,6 +13,7 @@ pub mod message_data;
 
 pub fn init() -> impl Future {
     pretty_env_logger::init();
+    bootstrap::start();
     environment_variables::load();
 
     let bot = Bot::from_env().auto_send();
