@@ -131,17 +131,17 @@ pub fn is_duplicate_reputation(data: &MessageData) -> bool {
 
 fn get_trigger_type(string: String, strict: bool) -> TriggerType {
     let triggers = Triggers::load();
-    for trigger in triggers.positive.iter() {
-        if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
-            return TriggerType::Positive;
-        }
-    }
-
-    for trigger in triggers.negative.iter() {
-        if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
-            return TriggerType::Negative;
-        }
-    }
+    // for trigger in triggers.positive.iter() {
+    //     if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
+    //         return TriggerType::Positive;
+    //     }
+    // }
+    //
+    // for trigger in triggers.negative.iter() {
+    //     if strict && string.contains(trigger) || string.to_lowercase().contains(trigger) {
+    //         return TriggerType::Negative;
+    //     }
+    // }
 
     TriggerType::None
 }

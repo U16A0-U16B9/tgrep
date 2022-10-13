@@ -1,12 +1,24 @@
+use std::collections::HashMap;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use log::error;
 use serde::{Deserialize, Serialize};
+use teloxide::prelude::ChatId;
+
+pub const TRIGGER_VERSION: usize = 1;
 
 #[derive(Serialize, Deserialize)]
 pub struct Triggers {
-    pub positive: Vec<String>,
-    pub negative: Vec<String>,
+    pub version: usize,
+    pub chat: HashMap<ChatId, Vec<ChatTrigger>>,
+}
+
+
+#[derive(Serialize, Deserialize)]
+pub struct ChatTrigger {
+    pub trigger: String,
+    pub trigger_type: TriggerType,
+    pub is_wildcard: bool
 }
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
@@ -19,8 +31,8 @@ pub enum TriggerType {
 impl Triggers {
     pub fn new() -> Triggers {
         Triggers {
-            negative: vec![String::from("minus"), String::from("-")],
-            positive: vec![String::from("plus"), String::from("+")],
+            version: TRIGGER_VERSION,
+            chat: HashMap::new(),
         }
     }
 
@@ -39,7 +51,7 @@ impl Triggers {
         }
     }
 
-    fn save(triggers: Triggers) -> Triggers {
+    pub fn save(triggers: Triggers) -> Triggers {
         let trigger_text = serde_json::to_string(&triggers);
         match trigger_text {
             Ok(_trigger_text) => {
