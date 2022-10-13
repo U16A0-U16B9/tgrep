@@ -12,10 +12,7 @@ pub mod handle_user;
 pub mod message_data;
 
 pub fn init() -> impl Future {
-    pretty_env_logger::init();
     bootstrap::start();
-    environment_variables::load();
-
     let bot = Bot::from_env().auto_send();
 
     teloxide::repl(bot, |message: Message, bot: AutoSend<Bot>| async move {

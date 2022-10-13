@@ -9,11 +9,11 @@ pub fn load_teloxide_env_variable() {
 
     match settings.bot_id {
         None => {
-            warn!("{} environment variable missing", TELOXIDE_ENV_KEY)
+            warn!("⚙️ {} environment variable missing", TELOXIDE_ENV_KEY)
         }
         Some(_bot_id) => {
             env::set_var(TELOXIDE_ENV_KEY, _bot_id);
-            info!("{} environment variable set", TELOXIDE_ENV_KEY)
+            info!("⚙️ {} environment variable set", TELOXIDE_ENV_KEY)
         }
     }
 }

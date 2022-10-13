@@ -75,7 +75,7 @@ impl Migrations for TriggerMigration {
             panic!("❌ Trigger migration failed: Unknown current version")
         }
         if Self::get_current_version() == Self::get_latest_version() {
-            info!("🚀 Trigger migration already up to date")
+            return info!("🚀 Trigger migration already up to date")
         }
         if Self::get_current_version() > Self::get_latest_version() {
             panic!("❌ Trigger migration failed: Outdated bot")
@@ -89,6 +89,7 @@ impl Migrations for TriggerMigration {
                     let migration = Self::migrate_version_v1(triggers_option);
                     match migration {
                         Ok(_) => {
+                            info!("🚀 Trigger migration completed");
                             break;
                         }
                         Err(_) => {
@@ -101,6 +102,5 @@ impl Migrations for TriggerMigration {
                 }
             }
         }
-        panic!("RADI!!");
     }
 }
