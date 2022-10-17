@@ -87,7 +87,7 @@ impl MessageData {
             trigger_type,
         };
         data.is_duplicate = is_duplicate_reputation(&data);
-        data.valid = calculate_if_data_is_valid(&data);
+        //data.valid = calculate_if_data_is_valid(&data);
 
         data
     }

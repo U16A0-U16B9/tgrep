@@ -21,7 +21,8 @@ pub struct TriggersV1 {
 pub struct ChatTriggerV1 {
     pub trigger: String,
     pub trigger_type: TriggerTypeV1,
-    pub is_wildcard: bool
+    pub is_wildcard: bool,
+    pub is_sticker: bool
 }
 
 #[derive(Serialize, Deserialize, Copy, Clone)]
@@ -77,7 +78,8 @@ impl TriggersV1 {
             chat_triggers.push(ChatTriggerV1{
                 trigger: trigger.clone(),
                 trigger_type: TriggerTypeV1::Positive,
-                is_wildcard: true
+                is_wildcard: true,
+                is_sticker: false
             });
         }
 
@@ -85,7 +87,8 @@ impl TriggersV1 {
             chat_triggers.push(ChatTriggerV1{
                 trigger: trigger.clone(),
                 trigger_type: TriggerTypeV1::Negative,
-                is_wildcard: true
+                is_wildcard: true,
+                is_sticker: false
             });
         }
         chat_triggers

@@ -14,14 +14,15 @@ pub struct Triggers {
 }
 
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ChatTrigger {
     pub trigger: String,
     pub trigger_type: TriggerType,
-    pub is_wildcard: bool
+    pub is_wildcard: bool,
+    pub is_sticker: bool
 }
 
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]
 pub enum TriggerType {
     None,
     Positive,
