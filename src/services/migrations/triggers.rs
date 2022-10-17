@@ -1,29 +1,26 @@
-use log::{info};
-use serde::Serialize;
-use serde_json::Error;
 use crate::services::config::triggers::Triggers;
 use crate::services::config::triggers::TRIGGER_VERSION;
-use crate::services::migrations::Migrations;
 use crate::services::migrations::triggers::trigger_v0::TriggersV0;
 use crate::services::migrations::triggers::trigger_v1::TriggersV1;
+use crate::services::migrations::Migrations;
+use log::info;
+use serde::Serialize;
+use serde_json::Error;
 
 mod trigger_v0;
 mod trigger_v1;
 
-pub struct TriggerMigration {
-}
+pub struct TriggerMigration {}
 
 impl TriggerMigration {
-    fn convert_to_trigger<T:Serialize>(migration_trigger: T) -> Result<Triggers, Error> {
+    fn convert_to_trigger<T: Serialize>(migration_trigger: T) -> Result<Triggers, Error> {
         let result = serde_json::to_string(&migration_trigger);
         match result {
             Ok(string) => {
                 let trigger: Result<Triggers, serde_json::Error> = serde_json::from_str(string.as_str());
                 trigger
             }
-            Err(e) => {
-                Err(e)
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -33,18 +30,11 @@ impl TriggerMigration {
                 panic!("❌ Trigger migration failed: Unable to load triggers")
             }
             Some(triggers_v0) => {
-                let (
-                    triggers_v1,
-                    triggers_option
-                ) = TriggersV1::migrate(triggers_v0);
+                let (triggers_v1, triggers_option) = TriggersV1::migrate(triggers_v0);
 
                 match triggers_option {
-                    None => {
-                        Err(triggers_v1)
-                    }
-                    Some(triggers) => {
-                        Ok(Triggers::save(triggers))
-                    }
+                    None => Err(triggers_v1),
+                    Some(triggers) => Ok(Triggers::save(triggers)),
                 }
             }
         }
@@ -55,18 +45,18 @@ impl Migrations for TriggerMigration {
     fn get_current_version() -> usize {
         match TriggersV0::load() {
             None => {}
-            Some(_) => { return 0 }
+            Some(_) => return 0,
         }
         match TriggersV1::load() {
             None => {}
-            Some(_) => { return 1}
+            Some(_) => return 1,
         }
 
         usize::MAX
     }
 
     fn get_latest_version() -> usize {
-        return TRIGGER_VERSION
+        return TRIGGER_VERSION;
     }
 
     fn migrate() {
@@ -75,7 +65,7 @@ impl Migrations for TriggerMigration {
             panic!("❌ Trigger migration failed: Unknown current version")
         }
         if Self::get_current_version() == Self::get_latest_version() {
-            return info!("🚀 Trigger migration already up to date")
+            return info!("🚀 Trigger migration already up to date");
         }
         if Self::get_current_version() > Self::get_latest_version() {
             panic!("❌ Trigger migration failed: Outdated bot")

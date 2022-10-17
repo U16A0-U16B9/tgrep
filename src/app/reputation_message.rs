@@ -1,6 +1,9 @@
-use teloxide::types::{ChatId, Message, MessageId, User};
-use crate::app::message_data::message_helper::{calculate_if_data_is_valid, get_chat_triggers, get_message_user, get_replied_message, get_replied_user, is_duplicate};
+use crate::app::message_data::message_helper::{
+    calculate_if_data_is_valid, get_chat_triggers, get_message_user, get_replied_message, get_replied_user,
+    is_duplicate,
+};
 use crate::services::config::triggers::ChatTrigger;
+use teloxide::types::{ChatId, Message, MessageId, User};
 
 pub struct ReputationMessage {
     pub chat_id: ChatId,
@@ -10,7 +13,7 @@ pub struct ReputationMessage {
     pub chat_triggers: Vec<ChatTrigger>,
     pub reply_message: Option<Message>,
     pub is_duplicate: bool,
-    pub is_valid: bool
+    pub is_valid: bool,
 }
 
 impl ReputationMessage {
@@ -23,7 +26,7 @@ impl ReputationMessage {
             chat_triggers: get_chat_triggers(message),
             reply_message: message.reply_to_message().cloned(),
             is_duplicate: is_duplicate(message),
-            is_valid: false
+            is_valid: false,
         };
 
         reputation_message.is_valid = calculate_if_data_is_valid(&reputation_message);

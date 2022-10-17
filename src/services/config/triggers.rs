@@ -1,8 +1,8 @@
-use std::collections::HashMap;
 use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use log::error;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use teloxide::prelude::ChatId;
 
 pub const TRIGGER_VERSION: usize = 1;
@@ -13,13 +13,12 @@ pub struct Triggers {
     pub chat: HashMap<ChatId, Vec<ChatTrigger>>,
 }
 
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ChatTrigger {
     pub trigger: String,
     pub trigger_type: TriggerType,
     pub is_wildcard: bool,
-    pub is_sticker: bool
+    pub is_sticker: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]

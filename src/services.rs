@@ -1,7 +1,7 @@
+pub mod bootstrap;
 pub mod commands;
 pub mod config;
 pub mod data;
 pub mod environment_variables;
-pub mod persistence_manager;
 pub mod migrations;
-pub mod bootstrap;
+pub mod persistence_manager;

@@ -1,11 +1,11 @@
 use super::services::environment_variables;
+use crate::app::reputation_message::ReputationMessage;
 use crate::objects::messages::{MessageSender, ParseMessage};
+use crate::services::bootstrap;
 use handle_rep::HandledReputation;
 use message_data::MessageData;
 use std::future::Future;
 use teloxide::prelude::*;
-use crate::app::reputation_message::ReputationMessage;
-use crate::services::bootstrap;
 
 pub mod handle_cmd;
 pub mod handle_rep;

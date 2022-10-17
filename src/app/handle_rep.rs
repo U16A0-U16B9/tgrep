@@ -25,7 +25,8 @@ impl HandledReputation {
         let operation: String;
 
         let reputations = Reputations::load();
-        let (reciv_reputation, trigger, reputations) = reputation_calculator::calculate_reputation(&reputation_message, reputations);
+        let (reciv_reputation, trigger, reputations) =
+            reputation_calculator::calculate_reputation(&reputation_message, reputations);
         let _result = Reputations::save(reputations);
 
         match trigger {
@@ -34,12 +35,14 @@ impl HandledReputation {
             TriggerType::Negative => operation = "decreased".to_string(),
         }
 
-        let reciv_username = reputation_message.rep_reciv
+        let reciv_username = reputation_message
+            .rep_reciv
             .as_ref()
             .map(|user| generate_display_name(&user))
             .unwrap_or("Unknown".to_string())
             .clone();
-        let giver_username = reputation_message.rep_giver
+        let giver_username = reputation_message
+            .rep_giver
             .as_ref()
             .map(|user| generate_display_name(&user))
             .unwrap_or("Unknown".to_string())

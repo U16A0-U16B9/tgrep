@@ -1,6 +1,6 @@
-use log::info;
 use crate::services::environment_variables;
 use crate::services::migrations::migrate;
+use log::info;
 
 pub fn start() {
     pretty_env_logger::init();

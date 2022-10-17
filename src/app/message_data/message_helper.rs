@@ -1,12 +1,12 @@
-use std::ops::Deref;
 use super::MessageData;
+use crate::app::reputation_message::ReputationMessage;
 use crate::objects::user;
 use crate::services::config::settings::Settings;
-use crate::services::config::triggers::{TriggerType, Triggers, ChatTrigger, TRIGGER_VERSION};
+use crate::services::config::triggers::{ChatTrigger, TriggerType, Triggers, TRIGGER_VERSION};
 use crate::services::data::reputation_history::ReputationHistory;
+use std::ops::Deref;
 use teloxide::types::{ChatId, User, UserId};
 use teloxide::types::{Message, MessageId};
-use crate::app::reputation_message::ReputationMessage;
 
 pub fn get_replied_user(message: &Message) -> Option<User> {
     match message.reply_to_message() {
@@ -20,9 +20,7 @@ pub fn get_replied_user(message: &Message) -> Option<User> {
 
 pub fn get_replied_message(message: &Message) -> Option<Message> {
     match message.reply_to_message() {
-        Some(replied) => {
-            Some(message.clone())
-        },
+        Some(replied) => Some(message.clone()),
         None => None,
     }
 }
@@ -36,19 +34,13 @@ pub fn get_message_user(message: &Message) -> Option<User> {
 
 pub fn get_chat_triggers(message: &Message) -> Vec<ChatTrigger> {
     match message.text() {
-        Some(text) =>  get_message_trigger(
-            message.chat.id,
-            text.to_string(),
-            false
-        ),
+        Some(text) => get_message_trigger(message.chat.id, text.to_string(), false),
         None => match message.sticker() {
-            Some(sticker) => get_message_trigger(
-                message.chat.id,
-                sticker.clone().file_unique_id,
-                true
-            ),
-            _ => { vec![] }
-        }
+            Some(sticker) => get_message_trigger(message.chat.id, sticker.clone().file_unique_id, true),
+            _ => {
+                vec![]
+            }
+        },
     }
 }
 
@@ -58,8 +50,8 @@ pub fn is_duplicate(message: &Message) -> bool {
         None => false,
         Some(chat_reputation_history) => {
             for reputation_history_item in chat_reputation_history {
-                let user_id: Option<UserId> = message.from().cloned().map(|user| user.id );
-                let reply_message_id = message.reply_to_message().map(|rm | MessageId { message_id: rm.id });
+                let user_id: Option<UserId> = message.from().cloned().map(|user| user.id);
+                let reply_message_id = message.reply_to_message().map(|rm| MessageId { message_id: rm.id });
                 if reputation_history_item.sender == user_id
                     && reputation_history_item.reply_message_id == reply_message_id
                 {
@@ -84,13 +76,9 @@ fn get_message_trigger(chat_id: ChatId, string: String, is_sticker: bool) -> Vec
                     trigger = trigger.to_lowercase()
                 }
 
-                if chat_trigger.is_wildcard
-                    && string.contains(&trigger) {
-
+                if chat_trigger.is_wildcard && string.contains(&trigger) {
                     message_chat_triggers.push(chat_trigger.clone())
-                } else if !chat_trigger.is_wildcard
-                    && string.eq(&trigger) {
-
+                } else if !chat_trigger.is_wildcard && string.eq(&trigger) {
                     message_chat_triggers.push(chat_trigger)
                 }
             }
@@ -178,9 +166,7 @@ pub fn calculate_if_data_is_valid(reputation_message: &ReputationMessage) -> boo
     let settings = Settings::load();
 
     return match reputation_message.rep_reciv.as_ref() {
-        None => {
-            false
-        }
+        None => false,
         Some(rep_reciv_user) => {
             if !settings.can_rep_bot && rep_reciv_user.is_bot {
                 return false;
@@ -197,7 +183,7 @@ pub fn calculate_if_data_is_valid(reputation_message: &ReputationMessage) -> boo
 
             true
         }
-    }
+    };
 }
 
 pub fn is_duplicate_reputation(data: &MessageData) -> bool {

@@ -1,3 +1,4 @@
+use crate::app::reputation_message::ReputationMessage;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::Data;
 use crate::services::persistence_manager::file_manager::FileManager;
@@ -6,7 +7,6 @@ use log::error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use teloxide::types::{ChatId, MessageId, UserId};
-use crate::app::reputation_message::ReputationMessage;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ReputationHistory {
@@ -57,12 +57,15 @@ impl ReputationHistory {
 }
 
 impl ReputationHistoryItem {
-    pub fn new(reputation_message: &ReputationMessage,  trigger_type: TriggerType) -> ReputationHistoryItem {
+    pub fn new(reputation_message: &ReputationMessage, trigger_type: TriggerType) -> ReputationHistoryItem {
         ReputationHistoryItem {
             sender: reputation_message.rep_giver.as_ref().map(|user| user.id),
             receiver: reputation_message.rep_reciv.as_ref().map(|user| user.id),
             message_id: reputation_message.message_id,
-            reply_message_id: reputation_message.reply_message.as_ref().map(|message| MessageId { message_id: message.id }),
+            reply_message_id: reputation_message
+                .reply_message
+                .as_ref()
+                .map(|message| MessageId { message_id: message.id }),
             trigger_type,
         }
     }

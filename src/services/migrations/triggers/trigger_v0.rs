@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
-use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use crate::services::persistence_manager::file_manager::FileManager;
+use crate::services::persistence_manager::{ConfigType, PersistenceManager};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct TriggersV0 {

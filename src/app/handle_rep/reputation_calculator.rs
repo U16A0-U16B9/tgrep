@@ -1,24 +1,31 @@
 use crate::app::message_data::MessageData;
-use crate::services::config::triggers::{TriggerType};
+use crate::app::reputation_message::ReputationMessage;
+use crate::services::config::triggers::TriggerType;
 use crate::services::data::reputation_history::{ReputationHistory, ReputationHistoryItem};
 use crate::services::data::reputations::Reputations;
 use std::collections::HashMap;
-use crate::app::reputation_message::ReputationMessage;
 
 const ADD_STEP: i64 = 1;
 const SUB_STEP: i64 = -1;
 
-pub fn calculate_reputation(reputation_message: &ReputationMessage, mut reputations: Reputations) -> (i64, TriggerType, Reputations) {
+pub fn calculate_reputation(
+    reputation_message: &ReputationMessage,
+    mut reputations: Reputations,
+) -> (i64, TriggerType, Reputations) {
     let chat_rep = reputations.chats.get(&reputation_message.chat_id);
     let mut trigger_type: TriggerType = TriggerType::None;
 
-    if reputation_message.chat_triggers.iter().any(|trigger|
-        trigger.trigger_type == TriggerType::Positive
-    ) {
+    if reputation_message
+        .chat_triggers
+        .iter()
+        .any(|trigger| trigger.trigger_type == TriggerType::Positive)
+    {
         trigger_type = TriggerType::Positive;
-    } else if reputation_message.chat_triggers.iter().any(|trigger|
-        trigger.trigger_type == TriggerType::Negative
-    ) {
+    } else if reputation_message
+        .chat_triggers
+        .iter()
+        .any(|trigger| trigger.trigger_type == TriggerType::Negative)
+    {
         trigger_type = TriggerType::Negative;
     }
 
@@ -33,7 +40,7 @@ pub fn calculate_reputation(reputation_message: &ReputationMessage, mut reputati
                     } else if trigger_type == TriggerType::Negative {
                         reputations = decrement_reputation(reputation_message, reputations);
                     }
-                },
+                }
                 None => {
                     if trigger_type == TriggerType::Positive {
                         reputations = init_reputation(reputation_message, reputations, ADD_STEP);
@@ -63,7 +70,7 @@ pub fn calculate_reputation(reputation_message: &ReputationMessage, mut reputati
             .entry(reputation_message.rep_reciv.as_ref().unwrap().id)
             .or_default(),
         trigger_type,
-        reputations
+        reputations,
     )
 }
 
@@ -72,7 +79,9 @@ pub fn save_reputation_to_history(reputation_message: &ReputationMessage, trigge
     let mut rep_history = ReputationHistory::load();
     match rep_history.chats.get(&reputation_message.chat_id) {
         None => {
-            rep_history.chats.insert(reputation_message.chat_id, vec![rep_history_item]);
+            rep_history
+                .chats
+                .insert(reputation_message.chat_id, vec![rep_history_item]);
         }
         Some(_) => {
             rep_history
@@ -90,7 +99,7 @@ fn increment_reputation(reputation_message: &ReputationMessage, mut reputations:
         .chats
         .entry(reputation_message.chat_id)
         .or_default()
-        .entry( reputation_message.rep_reciv.as_ref().unwrap().id)
+        .entry(reputation_message.rep_reciv.as_ref().unwrap().id)
         .or_default() += ADD_STEP;
 
     reputations
