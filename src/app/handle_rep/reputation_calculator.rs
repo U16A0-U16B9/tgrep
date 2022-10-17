@@ -1,4 +1,3 @@
-use crate::app::message_data::MessageData;
 use crate::app::reputation_message::ReputationMessage;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::reputation_history::{ReputationHistory, ReputationHistoryItem};
@@ -34,7 +33,7 @@ pub fn calculate_reputation(
             let user_id = reputation_message.rep_reciv.clone().unwrap().id;
             let user_rep = _chat_rep.get(&user_id);
             match user_rep {
-                Some(user_rep_points) => {
+                Some(_) => {
                     if trigger_type == TriggerType::Positive {
                         reputations = increment_reputation(reputation_message, reputations);
                     } else if trigger_type == TriggerType::Negative {

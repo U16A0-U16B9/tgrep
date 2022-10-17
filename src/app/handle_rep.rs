@@ -5,8 +5,6 @@ use crate::services::config::settings::Settings;
 use crate::services::config::triggers::TriggerType;
 use crate::services::data::reputations::Reputations;
 
-use super::message_data::MessageData;
-
 mod reputation_calculator;
 
 pub struct HandledReputation {

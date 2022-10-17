@@ -1,4 +1,3 @@
-use super::services::environment_variables;
 use crate::app::reputation_message::ReputationMessage;
 use crate::objects::messages::{MessageSender, ParseMessage};
 use crate::services::bootstrap;
@@ -21,7 +20,6 @@ pub fn init() -> impl Future {
         handle_user::save_user(&message);
         let data = MessageData::get_data(&message);
         let reputation = ReputationMessage::new(&message);
-        let a = message.reply_to_message();
         let (is_command, command_message) = handle_cmd::execute(&message);
         if is_command {
             let command_message = command_message.unwrap_or("Unknown command error".to_string());

@@ -1,6 +1,5 @@
 use crate::app::message_data::message_helper::{
-    calculate_if_data_is_valid, get_chat_triggers, get_message_user, get_replied_message, get_replied_user,
-    is_duplicate,
+    calculate_if_data_is_valid, get_chat_triggers, get_message_user, get_replied_user, is_duplicate,
 };
 use crate::services::config::triggers::ChatTrigger;
 use teloxide::types::{ChatId, Message, MessageId, User};
