@@ -13,7 +13,7 @@ pub struct ReputationHistory {
     pub chats: HashMap<ChatId, Vec<ReputationHistoryItem>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 pub struct ReputationHistoryItem {
     pub sender: Option<UserId>,
     pub receiver: Option<UserId>,

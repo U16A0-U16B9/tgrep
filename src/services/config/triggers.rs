@@ -73,20 +73,28 @@ mod triggers_tests {
     #[test]
     fn test_new() {
         let triggers = Triggers::new();
-        assert_eq!(triggers.positive.len(), 2);
-        assert_eq!(triggers.negative.len(), 2);
+        assert_eq!(triggers.version, TRIGGER_VERSION);
+        assert_eq!(triggers.chat.iter().count(), 0)
     }
 
     #[test]
     fn test_load_save() {
-        let rand = String::from("bb3Yzr35ousfdg9ie9Km1jaOJD9Iq15V");
+        let rand = "bb3Yzr35ousfdg9ie9Km1jaOJD9Iq15V";
         let mut triggers = Triggers::load();
-        triggers.positive.push(rand.clone());
+        let chat_id = ChatId(0xBB);
+        let chat_trigger = ChatTrigger {
+            trigger: rand.to_string(),
+            trigger_type: TriggerType::Positive,
+            is_wildcard: true,
+            is_sticker: false,
+        };
+        triggers.chat.insert(chat_id, vec![chat_trigger]);
         Triggers::save(triggers);
         let mut triggers = Triggers::load();
-        assert!(triggers.positive.contains(&rand));
+        let trigger_string = triggers.chat.get(&chat_id).unwrap().get(0).unwrap().clone().trigger;
+        assert!(trigger_string.eq(&rand.to_string()));
         // cleanup
-        triggers.positive.pop();
+        triggers.chat.remove(&chat_id);
         Triggers::save(triggers);
     }
 }
