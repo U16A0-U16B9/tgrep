@@ -2,14 +2,26 @@ use crate::services::persistence_manager::file_manager::FileManager;
 use crate::services::persistence_manager::{ConfigType, PersistenceManager};
 use log::error;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use teloxide::prelude::ChatId;
+
+pub const TRIGGER_VERSION: usize = 1;
 
 #[derive(Serialize, Deserialize)]
 pub struct Triggers {
-    pub positive: Vec<String>,
-    pub negative: Vec<String>,
+    pub version: usize,
+    pub chat: HashMap<ChatId, Vec<ChatTrigger>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ChatTrigger {
+    pub trigger: String,
+    pub trigger_type: TriggerType,
+    pub is_wildcard: bool,
+    pub is_sticker: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq)]
 pub enum TriggerType {
     None,
     Positive,
@@ -19,8 +31,8 @@ pub enum TriggerType {
 impl Triggers {
     pub fn new() -> Triggers {
         Triggers {
-            negative: vec![String::from("minus"), String::from("-")],
-            positive: vec![String::from("plus"), String::from("+")],
+            version: TRIGGER_VERSION,
+            chat: HashMap::new(),
         }
     }
 
@@ -39,7 +51,7 @@ impl Triggers {
         }
     }
 
-    fn save(triggers: Triggers) -> Triggers {
+    pub fn save(triggers: Triggers) -> Triggers {
         let trigger_text = serde_json::to_string(&triggers);
         match trigger_text {
             Ok(_trigger_text) => {
@@ -61,20 +73,28 @@ mod triggers_tests {
     #[test]
     fn test_new() {
         let triggers = Triggers::new();
-        assert_eq!(triggers.positive.len(), 2);
-        assert_eq!(triggers.negative.len(), 2);
+        assert_eq!(triggers.version, TRIGGER_VERSION);
+        assert_eq!(triggers.chat.iter().count(), 0)
     }
 
     #[test]
     fn test_load_save() {
-        let rand = String::from("bb3Yzr35ousfdg9ie9Km1jaOJD9Iq15V");
+        let rand = "bb3Yzr35ousfdg9ie9Km1jaOJD9Iq15V";
         let mut triggers = Triggers::load();
-        triggers.positive.push(rand.clone());
+        let chat_id = ChatId(0xBB);
+        let chat_trigger = ChatTrigger {
+            trigger: rand.to_string(),
+            trigger_type: TriggerType::Positive,
+            is_wildcard: true,
+            is_sticker: false,
+        };
+        triggers.chat.insert(chat_id, vec![chat_trigger]);
         Triggers::save(triggers);
         let mut triggers = Triggers::load();
-        assert!(triggers.positive.contains(&rand));
+        let trigger_string = triggers.chat.get(&chat_id).unwrap().get(0).unwrap().clone().trigger;
+        assert!(trigger_string.eq(&rand.to_string()));
         // cleanup
-        triggers.positive.pop();
+        triggers.chat.remove(&chat_id);
         Triggers::save(triggers);
     }
 }
