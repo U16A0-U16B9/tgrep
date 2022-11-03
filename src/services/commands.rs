@@ -53,7 +53,7 @@ pub fn is_command_match(message: &Message, command: &str, bot_username: &Option<
 
     match bot_username {
         Some(username) => {
-            command_with_bot = format!("{}@{}",command, username);
+            command_with_bot = format!("{}@{}", command, username);
         }
         _ => {}
     }
@@ -76,9 +76,7 @@ pub fn is_command_match_with_param(message: &Message, command: &str, bot_usernam
     let mut command_with_bot = command.to_string();
 
     match bot_username {
-        Some(username) => {
-            command_with_bot = format!("{}@{}",command, username)
-        }
+        Some(username) => command_with_bot = format!("{}@{}", command, username),
         _ => {}
     }
 
@@ -88,7 +86,8 @@ pub fn is_command_match_with_param(message: &Message, command: &str, bot_usernam
         }
         Some(_text) => {
             if !_text.to_string().starts_with((command.to_string() + " ").as_str())
-                && !_text.to_string().starts_with((command_with_bot + " ").as_str()) {
+                && !_text.to_string().starts_with((command_with_bot + " ").as_str())
+            {
                 valid = false;
             }
         }
