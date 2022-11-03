@@ -6,6 +6,7 @@ pub enum DataType {
     ReputationData,
     UserList,
     ReputationHistory,
+    Chats,
 }
 
 impl Display for DataType {
@@ -19,6 +20,9 @@ impl Display for DataType {
             }
             DataType::ReputationHistory => {
                 write!(f, "ReputationHistory")
+            }
+            DataType::Chats => {
+                write!(f, "Chats")
             }
         }
     }

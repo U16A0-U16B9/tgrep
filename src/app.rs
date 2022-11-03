@@ -6,6 +6,7 @@ use message_data::MessageData;
 use std::future::Future;
 use teloxide::prelude::*;
 
+pub mod handle_chat;
 pub mod handle_cmd;
 pub mod handle_rep;
 pub mod handle_user;
@@ -18,6 +19,7 @@ pub fn init() -> impl Future {
 
     teloxide::repl(bot, |message: Message, bot: AutoSend<Bot>| async move {
         handle_user::save_user(&message);
+        handle_chat::save_chat(&bot, &message).await;
         let data = MessageData::get_data(&message);
         let reputation = ReputationMessage::new(&message);
         let (is_command, command_message) = handle_cmd::execute(&message);
