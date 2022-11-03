@@ -8,6 +8,10 @@ pub async fn save_chat(bot: &AutoSend<Bot>, message: &Message) {
     let mut chats = Chats::load();
     let chat = message.chat.clone();
 
+    if chat.is_private() {
+        return;
+    }
+
     match chats.chats.get(&chat.id) {
         None => {
             let owner = get_owner_id(bot, chat.id).await;
