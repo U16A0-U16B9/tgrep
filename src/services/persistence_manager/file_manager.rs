@@ -11,6 +11,7 @@ const APPLICATION: &str = "tgbot";
 const DATA_REPUTATIONS: &str = "reputations.json";
 const DATA_USER_LIST: &str = "user-list.json";
 const DATA_REPUTATION_HISTORY: &str = "reputation-history.json";
+const DATA_CHATS: &str = "chats.json";
 
 const CONFIG_TRIGGERS: &str = "triggers.json";
 const CONFIG_SETTINGS: &str = "settings.json";
@@ -86,6 +87,7 @@ fn get_data_filename(data_type: &DataType) -> PathBuf {
         DataType::ReputationData => get_data_dir().as_path().join(DATA_REPUTATIONS),
         DataType::UserList => get_data_dir().as_path().join(DATA_USER_LIST),
         DataType::ReputationHistory => get_data_dir().as_path().join(DATA_REPUTATION_HISTORY),
+        DataType::Chats => get_data_dir().as_path().join(DATA_CHATS),
     }
 }
 
