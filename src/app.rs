@@ -5,6 +5,7 @@ use handle_rep::HandledReputation;
 use std::future::Future;
 use teloxide::prelude::*;
 
+pub mod handle_chat;
 pub mod handle_cmd;
 pub mod handle_rep;
 pub mod handle_user;
@@ -16,13 +17,15 @@ pub fn init() -> impl Future {
 
     teloxide::repl(bot, |message: Message, bot: AutoSend<Bot>| async move {
         handle_user::save_user(&message);
+        handle_chat::save_chat(&bot, &message).await;
+
         let bot_username = handle_cmd::get_bot_username(&bot).await;
 
         let (is_command, command_message) = handle_cmd::execute(&message, bot_username);
         if is_command {
             let command_message = command_message.unwrap_or("Unknown command error".to_string());
 
-            MessageSender::new(message.chat.id, command_message).send(bot).await;
+            MessageSender::new(data.get_chat_id(), command_message).send(bot).await;
             return respond(());
         }
 
@@ -30,7 +33,7 @@ pub fn init() -> impl Future {
         let result = HandledReputation::handle_rep(&reputation);
         match result {
             Some(_handled_reputation) => {
-                MessageSender::new(message.chat.id, _handled_reputation.parse())
+                MessageSender::new(data.get_chat_id(), _handled_reputation.parse())
                     .send(bot)
                     .await;
             }
