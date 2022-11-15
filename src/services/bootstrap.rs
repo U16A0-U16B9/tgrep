@@ -11,4 +11,5 @@ pub fn start() {
     info!("🚀 Migrating:");
     migrate();
     info!("🚀 Migration completed");
+    info!("🥾 Bootstrap completed");
 }

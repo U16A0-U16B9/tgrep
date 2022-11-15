@@ -9,13 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Simple migrations system
   - migration to new version of triggers
+- saving chats and their owner
+- option to call commands with {command}@{bot_username}
 ### Changed
 - Reputation triggers
   - change structure
   - triggers are now separated by chat_id
   - triggers now support `is_wildcard` option
+- removed message data
 - general refactoring
-
 ### Fixed
 - bug when first reputation is added in chat it was 0 not 1/-1
 

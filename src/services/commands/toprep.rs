@@ -12,15 +12,15 @@ const DEFAULT_TOP_REP_LIMIT: usize = 10;
 pub struct TopRep {}
 
 impl Command for TopRep {
-    fn is_valid_command(&self, message: &Message) -> bool {
+    fn is_valid_command(&self, message: &Message, bot_username: &Option<String>) -> bool {
         commands::default_command_validation(message)
-            && (commands::is_command_match(message, TOP_REP_COMMAND_TRIGGER)
-                || commands::is_command_match_with_param(message, TOP_REP_COMMAND_TRIGGER))
+            && (commands::is_command_match(message, TOP_REP_COMMAND_TRIGGER, bot_username)
+                || commands::is_command_match_with_param(message, TOP_REP_COMMAND_TRIGGER, bot_username))
     }
 
     fn execute(&self, _message: &Message) {}
 
-    fn response(&self, message: &Message) -> String {
+    fn response(&self, message: &Message, bot_username: &Option<String>) -> String {
         let reputations = Reputations::load();
         // let chat = message.chat;
         let chat_reputations = reputations.chats.get(&message.chat.id);
@@ -31,7 +31,7 @@ impl Command for TopRep {
                 let mut response = "".to_string();
                 let mut sorted: Vec<(&UserId, &i64)> = _reputations.iter().collect();
                 sorted.sort_by(|a, b| b.1.cmp(&a.1));
-                let limit = cmp::min(sorted.len(), limit_results(message));
+                let limit = cmp::min(sorted.len(), limit_results(message, bot_username));
                 sorted = sorted[..limit].to_owned();
 
                 for (user, rep) in sorted {
@@ -57,8 +57,8 @@ impl Command for TopRep {
     }
 }
 
-fn limit_results(message: &Message) -> usize {
-    if commands::is_command_match(message, TOP_REP_COMMAND_TRIGGER) {
+fn limit_results(message: &Message, bot_username: &Option<String>) -> usize {
+    if commands::is_command_match(message, TOP_REP_COMMAND_TRIGGER, bot_username) {
         return DEFAULT_TOP_REP_LIMIT;
     }
     return match message.text() {
