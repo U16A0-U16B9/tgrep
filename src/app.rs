@@ -25,7 +25,7 @@ pub fn init() -> impl Future {
         if is_command {
             let command_message = command_message.unwrap_or("Unknown command error".to_string());
 
-            MessageSender::new(data.get_chat_id(), command_message).send(bot).await;
+            MessageSender::new(message.chat.id, command_message).send(bot).await;
             return respond(());
         }
 
@@ -33,7 +33,7 @@ pub fn init() -> impl Future {
         let result = HandledReputation::handle_rep(&reputation);
         match result {
             Some(_handled_reputation) => {
-                MessageSender::new(data.get_chat_id(), _handled_reputation.parse())
+                MessageSender::new(message.chat.id, _handled_reputation.parse())
                     .send(bot)
                     .await;
             }
